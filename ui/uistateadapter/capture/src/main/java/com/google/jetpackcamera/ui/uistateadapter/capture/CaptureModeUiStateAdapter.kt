@@ -36,7 +36,9 @@ import com.google.jetpackcamera.ui.uistate.capture.CaptureModeUiState
 private val ORDERED_UI_SUPPORTED_CAPTURE_MODES = listOf(
     CaptureMode.STANDARD,
     CaptureMode.IMAGE_ONLY,
-    CaptureMode.VIDEO_ONLY
+    CaptureMode.VIDEO_ONLY,
+    CaptureMode.PRO,
+    CaptureMode.GIF
 )
 
 /**

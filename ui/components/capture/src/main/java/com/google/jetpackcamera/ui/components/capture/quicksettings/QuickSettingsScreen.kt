@@ -212,6 +212,8 @@ private fun CaptureModeUiState.stateDescription() = (this as? CaptureModeUiState
         CaptureMode.STANDARD -> R.string.quick_settings_description_capture_mode_standard
         CaptureMode.VIDEO_ONLY -> R.string.quick_settings_description_capture_mode_video_only
         CaptureMode.IMAGE_ONLY -> R.string.quick_settings_description_capture_mode_image_only
+        CaptureMode.PRO -> R.string.quick_settings_pro_mode_description
+        CaptureMode.GIF -> R.string.quick_settings_gif_mode_description
     }
 }
 
