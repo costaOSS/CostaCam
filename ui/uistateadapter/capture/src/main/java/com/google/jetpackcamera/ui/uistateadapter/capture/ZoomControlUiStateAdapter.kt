@@ -30,7 +30,8 @@ import com.google.jetpackcamera.ui.uistate.capture.ZoomControlUiState
  *
  * If the camera lens does not support zooming (i.e., the zoom range is a single value), this
  * function will return [ZoomControlUiState.Disabled]. Otherwise, it calculates a list of discrete
- * zoom levels to display to the user (e.g., 0.5x, 1x, 2x, 5x) based on the supported range.
+ * zoom levels to display to the user (e.g., 0.5x, 1x, 2x, 5x, 10x, 20x, 50x, 100x) based on the
+ * supported range.
  *
  * @param animateZoomState An optional target zoom ratio for an ongoing animation. If non-null, the
  *   UI can use this to show an animation progressing towards the target.
@@ -68,6 +69,18 @@ fun ZoomControlUiState.Companion.from(
         }
         if (zoomRange.contains(5f)) {
             add(5f)
+        }
+        if (zoomRange.contains(10f)) {
+            add(10f)
+        }
+        if (zoomRange.contains(20f)) {
+            add(20f)
+        }
+        if (zoomRange.contains(50f)) {
+            add(50f)
+        }
+        if (zoomRange.upper >= 100f) {
+            add(100f)
         }
     }
     return ZoomControlUiState.Enabled(
