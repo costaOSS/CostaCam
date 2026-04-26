@@ -141,4 +141,17 @@
 
     <!-- ImageWell -->
     <string name="image_well_content_description">View recently saved media</string>
+
+    <!-- CostaCam Additional Features -->
+    <string name="quick_settings_pro_mode_text">Pro</string>
+    <string name="quick_settings_pro_mode_description">Pro manual camera mode</string>
+    <string name="quick_settings_gif_mode_text">GIF</string>
+    <string name="quick_settings_gif_mode_description">GIF animation capture mode</string>
+    <string name="pro_mode_exposure">Exposure</string>
+    <string name="pro_mode_white_balance">White Balance</string>
+    <string name="pro_mode_iso">ISO</string>
+    <string name="pro_mode_shutter_speed">Shutter Speed</string>
+    <string name="pro_mode_focus">Focus</string>
+    <string name="gif_capture_in_progress">Recording GIF…</string>
+    <string name="gif_capture_complete">GIF saved</string>
 </resources>

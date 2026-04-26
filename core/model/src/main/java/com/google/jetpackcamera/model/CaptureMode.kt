@@ -45,5 +45,19 @@ enum class CaptureMode {
      * Tap the Capture Button to capture an Image.
      * Holding the Capture Button will do nothing. Subsequent release of the Capture button will also do nothing.
      */
-    IMAGE_ONLY
+    IMAGE_ONLY,
+
+    /**
+     * Pro mode with manual camera controls (ISO, shutter speed, white balance, focus).
+     *
+     * Provides full manual control over camera settings for advanced photography.
+     */
+    PRO,
+
+    /**
+     * GIF animation capture mode.
+     *
+     * Captures multiple frames and compiles them into an animated GIF.
+     */
+    GIF
 }
