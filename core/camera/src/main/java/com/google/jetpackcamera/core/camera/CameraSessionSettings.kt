@@ -21,9 +21,11 @@ import com.google.jetpackcamera.model.CaptureMode
 import com.google.jetpackcamera.model.DeviceRotation
 import com.google.jetpackcamera.model.DynamicRange
 import com.google.jetpackcamera.model.FlashMode
+import com.google.jetpackcamera.model.GifCaptureSettings
 import com.google.jetpackcamera.model.ImageOutputFormat
 import com.google.jetpackcamera.model.LensFacing
 import com.google.jetpackcamera.model.LowLightBoostPriority
+import com.google.jetpackcamera.model.ProModeSettings
 import com.google.jetpackcamera.model.StabilizationMode
 import com.google.jetpackcamera.model.StreamConfig
 import com.google.jetpackcamera.model.TestPattern
@@ -48,7 +50,9 @@ internal sealed interface PerpetualSessionSettings {
         val dynamicRange: DynamicRange,
         val videoQuality: VideoQuality,
         val imageFormat: ImageOutputFormat,
-        val lowLightBoostPriority: LowLightBoostPriority
+        val lowLightBoostPriority: LowLightBoostPriority,
+        val proModeSettings: ProModeSettings? = null,
+        val gifCaptureSettings: GifCaptureSettings? = null
     ) : PerpetualSessionSettings
 
     /**

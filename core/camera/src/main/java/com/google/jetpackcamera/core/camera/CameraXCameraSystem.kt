@@ -56,6 +56,7 @@ import com.google.jetpackcamera.model.ConcurrentCameraMode
 import com.google.jetpackcamera.model.DeviceRotation
 import com.google.jetpackcamera.model.DynamicRange
 import com.google.jetpackcamera.model.FlashMode
+import com.google.jetpackcamera.model.GifCaptureSettings
 import com.google.jetpackcamera.model.Illuminant
 import com.google.jetpackcamera.model.ImageOutputFormat
 import com.google.jetpackcamera.model.LensFacing
@@ -63,6 +64,7 @@ import com.google.jetpackcamera.model.LensToZoom
 import com.google.jetpackcamera.model.LowLightBoostAvailability
 import com.google.jetpackcamera.model.LowLightBoostPriority
 import com.google.jetpackcamera.model.LowLightBoostState
+import com.google.jetpackcamera.model.ProModeSettings
 import com.google.jetpackcamera.model.SaveLocation
 import com.google.jetpackcamera.model.StabilizationMode
 import com.google.jetpackcamera.model.StreamConfig
@@ -434,7 +436,9 @@ constructor(
                             dynamicRange = currentCameraSettings.dynamicRange,
                             videoQuality = currentCameraSettings.videoQuality,
                             imageFormat = currentCameraSettings.imageFormat,
-                            lowLightBoostPriority = currentCameraSettings.lowLightBoostPriority
+                            lowLightBoostPriority = currentCameraSettings.lowLightBoostPriority,
+                            proModeSettings = currentCameraSettings.proModeSettings,
+                            gifCaptureSettings = currentCameraSettings.gifCaptureSettings
                         )
                     }
 
@@ -668,6 +672,18 @@ constructor(
     override fun setTestPattern(newTestPattern: TestPattern) {
         currentSettings.update { old ->
             old?.copy(debugSettings = old.debugSettings.copy(testPattern = newTestPattern)) ?: old
+        }
+    }
+
+    override fun setProModeSettings(settings: ProModeSettings?) {
+        currentSettings.update { old ->
+            old?.copy(proModeSettings = settings) ?: old
+        }
+    }
+
+    override fun setGifCaptureSettings(settings: GifCaptureSettings?) {
+        currentSettings.update { old ->
+            old?.copy(gifCaptureSettings = settings) ?: old
         }
     }
 

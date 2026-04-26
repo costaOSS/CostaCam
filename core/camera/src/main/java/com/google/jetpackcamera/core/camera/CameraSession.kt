@@ -77,6 +77,7 @@ import com.google.jetpackcamera.model.Illuminant
 import com.google.jetpackcamera.model.ImageOutputFormat
 import com.google.jetpackcamera.model.LensFacing
 import com.google.jetpackcamera.model.LowLightBoostState
+import com.google.jetpackcamera.model.ProModeSettings
 import com.google.jetpackcamera.model.SaveLocation
 import com.google.jetpackcamera.model.StabilizationMode
 import com.google.jetpackcamera.model.StreamConfig
@@ -133,9 +134,9 @@ internal suspend fun runSingleCameraSession(
     val initialCameraSelector = transientSettings.filterNotNull().first()
         .primaryLensFacing.toCameraSelector()
 
-    // only create video use case in standard or video_only
+    // only create video use case in standard or video_only or PRO or GIF
     val videoCaptureUseCase = when (sessionSettings.captureMode) {
-        CaptureMode.STANDARD, CaptureMode.VIDEO_ONLY ->
+        CaptureMode.STANDARD, CaptureMode.VIDEO_ONLY, CaptureMode.PRO, CaptureMode.GIF ->
             createVideoUseCase(
                 cameraProvider.getCameraInfo(initialCameraSelector),
                 sessionSettings.aspectRatio,
@@ -555,6 +556,13 @@ private suspend fun updateCamera2RequestOptions(
         needsUpdate = true
     }
 
+    // Apply Pro Mode manual camera controls
+    val proModeSettings = sessionSettings?.proModeSettings
+    if (proModeSettings != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        applyProModeSettings(camera, proModeSettings, optionsBuilder)
+        needsUpdate = true
+    }
+
     if (needsUpdate) {
         Camera2CameraControl.from(camera.cameraControl)
             .setCaptureRequestOptions(optionsBuilder.build())
@@ -605,7 +613,7 @@ internal fun createUseCaseGroup(
             captureResults
         )
 
-    // only create image use case in image or standard
+    // only create image use case in image or standard or PRO or GIF
     val imageCaptureUseCase = if (captureMode != CaptureMode.VIDEO_ONLY) {
         createImageUseCase(cameraInfo, aspectRatio, dynamicRange, imageFormat)
     } else {
@@ -736,7 +744,71 @@ private fun getAspectRatioForUseCase(sensorLandscapeRatio: Float, aspectRatio: A
                 androidx.camera.core.AspectRatio.RATIO_4_3
             }
         }
+}
+
+context(CameraSessionContext)
+@ExperimentalCamera2Interop
+private fun applyProModeSettings(
+    camera: Camera,
+    proModeSettings: ProModeSettings,
+    optionsBuilder: CaptureRequestOptions.Builder
+) {
+    val camera2Control = Camera2CameraControl.from(camera.cameraControl)
+
+    proModeSettings.iso?.let { iso ->
+        if (iso > 0) {
+            optionsBuilder.setCaptureRequestOption(CaptureRequest.CONTROL_AE_MODE, CameraMetadata.CONTROL_AE_MODE_OFF)
+            optionsBuilder.setCaptureRequestOption(CaptureRequest.SENSOR_SENSITIVITY, iso.coerceIn(100, 3200))
+        }
     }
+
+    proModeSettings.shutterSpeed?.let { shutterNs ->
+        if (shutterNs > 0) {
+            optionsBuilder.setCaptureRequestOption(CaptureRequest.CONTROL_AE_MODE, CameraMetadata.CONTROL_AE_MODE_OFF)
+            optionsBuilder.setCaptureRequestOption(CaptureRequest.SENSOR_EXPOSURE_TIME, shutterNs.coerceIn(1000L, 1000000000L))
+        }
+    }
+
+    when (proModeSettings.whiteBalance) {
+        is ProModeSettings.WhiteBalanceMode.AUTO -> {
+            optionsBuilder.setCaptureRequestOption(CaptureRequest.CONTROL_AWB_MODE, CameraMetadata.CONTROL_AWB_MODE_AUTO)
+        }
+        is ProModeSettings.WhiteBalanceMode.CLOUDY -> {
+            optionsBuilder.setCaptureRequestOption(CaptureRequest.CONTROL_AWB_MODE, CameraMetadata.CONTROL_AWB_MODE_CLOUD_DAYLIGHT)
+        }
+        is ProModeSettings.WhiteBalanceMode.DAYLIGHT -> {
+            optionsBuilder.setCaptureRequestOption(CaptureRequest.CONTROL_AWB_MODE, CameraMetadata.CONTROL_AWB_MODE_DAYLIGHT)
+        }
+        is ProModeSettings.WhiteBalanceMode.INCANDESCENT -> {
+            optionsBuilder.setCaptureRequestOption(CaptureRequest.CONTROL_AWB_MODE, CameraMetadata.CONTROL_AWB_MODE_INCANDESCENT)
+        }
+        is ProModeSettings.WhiteBalanceMode.FLUORESCENT -> {
+            optionsBuilder.setCaptureRequestOption(CaptureRequest.CONTROL_AWB_MODE, CameraMetadata.CONTROL_AWB_MODE_FLUORESCENT)
+        }
+        is ProModeSettings.WhiteBalanceMode.SHADE -> {
+            optionsBuilder.setCaptureRequestOption(CaptureRequest.CONTROL_AWB_MODE, CameraMetadata.CONTROL_AWB_MODE_SHADE)
+        }
+    }
+
+    proModeSettings.focusDistance?.let { focusDist ->
+        if (focusDist >= 0) {
+            camera2Control.setCaptureRequestOption(
+                CaptureRequest.CONTROL_AF_MODE,
+                CameraMetadata.CONTROL_AF_MODE_OFF
+            )
+            camera2Control.setCaptureRequestOption(
+                CaptureRequest.LENS_FOCUS_DISTANCE,
+                focusDist.coerceIn(0f, 10f)
+            )
+        }
+    }
+
+    if (proModeSettings.exposureCompensation != 0) {
+        camera.cameraControl.setExposureCompensationIndex(proModeSettings.exposureCompensation)
+    }
+
+    Log.d(TAG, "Applied Pro Mode settings: ISO=${proModeSettings.iso}, Shutter=${proModeSettings.shutterSpeed}, WB=${proModeSettings.whiteBalance}")
+}
 
 context(CameraSessionContext)
 private fun createPreviewUseCase(

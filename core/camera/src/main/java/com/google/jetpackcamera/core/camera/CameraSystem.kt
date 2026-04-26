@@ -25,9 +25,11 @@ import com.google.jetpackcamera.model.ConcurrentCameraMode
 import com.google.jetpackcamera.model.DeviceRotation
 import com.google.jetpackcamera.model.DynamicRange
 import com.google.jetpackcamera.model.FlashMode
+import com.google.jetpackcamera.model.GifCaptureSettings
 import com.google.jetpackcamera.model.ImageOutputFormat
 import com.google.jetpackcamera.model.LensFacing
 import com.google.jetpackcamera.model.LowLightBoostPriority
+import com.google.jetpackcamera.model.ProModeSettings
 import com.google.jetpackcamera.model.SaveLocation
 import com.google.jetpackcamera.model.StabilizationMode
 import com.google.jetpackcamera.model.StreamConfig
@@ -130,6 +132,10 @@ interface CameraSystem {
     suspend fun setMaxVideoDuration(durationInMillis: Long)
 
     suspend fun setCaptureMode(captureMode: CaptureMode)
+
+    fun setProModeSettings(settings: ProModeSettings?)
+
+    fun setGifCaptureSettings(settings: GifCaptureSettings?)
 
     /**
      * Represents the events required for screen flash.

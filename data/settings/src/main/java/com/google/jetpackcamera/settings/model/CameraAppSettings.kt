@@ -25,9 +25,11 @@ import com.google.jetpackcamera.model.DynamicRange
 import com.google.jetpackcamera.model.ExternalCaptureMode
 import com.google.jetpackcamera.model.ExternalCaptureMode.Companion.toCaptureMode
 import com.google.jetpackcamera.model.FlashMode
+import com.google.jetpackcamera.model.GifCaptureSettings
 import com.google.jetpackcamera.model.ImageOutputFormat
 import com.google.jetpackcamera.model.LensFacing
 import com.google.jetpackcamera.model.LowLightBoostPriority
+import com.google.jetpackcamera.model.ProModeSettings
 import com.google.jetpackcamera.model.StabilizationMode
 import com.google.jetpackcamera.model.StreamConfig
 import com.google.jetpackcamera.model.TARGET_FPS_AUTO
@@ -55,7 +57,9 @@ data class CameraAppSettings(
     val concurrentCameraMode: ConcurrentCameraMode = ConcurrentCameraMode.OFF,
     val maxVideoDurationMillis: Long = UNLIMITED_VIDEO_DURATION,
     val lowLightBoostPriority: LowLightBoostPriority = LowLightBoostPriority.PRIORITIZE_AE_MODE,
-    val debugSettings: DebugSettings = DebugSettings()
+    val debugSettings: DebugSettings = DebugSettings(),
+    val proModeSettings: ProModeSettings? = null,
+    val gifCaptureSettings: GifCaptureSettings? = null
 )
 
 fun CameraSystemConstraints.forCurrentLens(
