@@ -19,7 +19,7 @@ import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
 
 /**
- * [Application] class for JetpackCameraApp.
+ * [Application] class for CostaCam.
  */
 @HiltAndroidApp
-class JetpackCameraApplication : Application()
+class CostaCamApplication : Application()
